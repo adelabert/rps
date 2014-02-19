@@ -1,9 +1,10 @@
-function twoPlayer() {
+module.exports = function loadGame() {
 	return {
-		reRank: function(winner, loser, ){
-
-		} 
+		//Game Constructor
+		Game: function(title, numPlayers){
+			this.title = title;
+			this.numPlayers = numPlayers;
+		}
 	}
-}
+};
 
-module.exports = twoPlayer;
