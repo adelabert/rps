@@ -10,14 +10,5 @@ module.exports = function twoPlayer() {
 				return;
 			}
 		},
-		//re-rank those below after splicing a user 
-		spliceRank: function(rankSpliced, users){
-			for(var i=0; i<users.length; i++){
-				if(users[i].rank > rankSpliced){
-					users[i].rank--;
-				}
-			}
-			console.log(rankSpliced);
-		}
 	}
 };

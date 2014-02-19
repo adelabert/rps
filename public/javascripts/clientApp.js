@@ -1,5 +1,3 @@
-
-
 var socket = io.connect('http://localhost:3000');
 
 socket.on('frmServer:login', function(){
@@ -14,21 +12,22 @@ socket.on('frmServer:refreshRoom', function(room){
 
 function renderRoom(room){
 	renderUsers(room.users);
-	renderTables(room);
+	//renderTables(room);
 }
+
 
 function renderUsers(users){
-	var temp = '';
-	for(var i=0; i<users.length; i++){
-		temp += users[i].username;
-		temp += ': ';
-		temp += users[i].rank;
-		temp += '</br>';
+	var usersHTML = '';
+	function scriptLine(element, index, array){
+		var temp = '';
+		temp += '' + index + ': ' + element.username + '</br>'	;
+		usersHTML += temp;
 	}
-	$('#userList').html(temp);
+	users.forEach(scriptLine);
+	$('#userList').html(usersHTML);
 }
 
-
+/*
 function renderTables(room){
 	var tablesHTML = '';
 	for(var i=0; i<room.tables.length; i++){
@@ -39,18 +38,11 @@ function renderTables(room){
 }
 
 
-
-
-function scriptTable(i, users, waitList){
-	var tempPlayerRank = ((i*2)+1);
-	var highChairPlayer = selectForRank(users, tempPlayerRank);
-	var highChairHTML = scriptChair('high', highChairPlayer.username);
-
-	var tempPlayerRank1 = ((i*2)+2);
-	var lowChairPlayer = selectForRank(users, tempPlayerRank1);
-	var lowChairHTML = scriptChair('low', lowChairPlayer.username);
-
-	var tableHTML = highChairHTML + lowChairHTML;
+function scriptTable(high, low, waiting){
+	var highChairHTML = scriptChair('high', high);
+	var lowChairHTML = scriptChair('low', low);
+	var waitChairHTML = srciptChair('wait', wait);
+	var tableHTML = highChairHTML + lowChairHTML + waitChairHTML;
 	return tableHTML;
 }
 
@@ -63,20 +55,4 @@ function scriptChair(chairType, playerName){
 	 temp += playerName;
 	 temp += '</div>';
 	return temp;
-}
-
-function selectForRank(userArray, rank){
-	for(var i=0; i<userArray.length; i++){
-		if(userArray[i].rank == rank){
-			return userArray[i];
-		}
-	}	
-}
-
-
-
-
-
-
-
-
+}*/
