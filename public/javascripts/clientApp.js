@@ -1,6 +1,6 @@
 
 
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect(document.window.host);
 
 socket.on('frmServer:login', function(){
 	var username = prompt('Pick a username: ');
