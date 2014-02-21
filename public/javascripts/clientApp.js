@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect(window.document.host);
 
 socket.on('frmServer:login', function(){
 	var username = prompt('Pick a username: ');
@@ -6,12 +6,38 @@ socket.on('frmServer:login', function(){
 });
 
 socket.on('startingHigher', function(players){
-	alert('starting a game with a lower player');
+	$('#board').toggle();
+	$('.choices').toggle();
+	//alert('starting a game with a lower player');
 });
 socket.on('startingLower', function(players){
-	alert('starting a game with a higher player');
+	$('#board').toggle();
+	$('.choices').toggle();
 });
 
+socket.on('opponentChoice', function(opponentChoice, result){
+	var opponentHTML = 'they choice ' + opponentChoice + '';
+	$('#opponentChoice').html(opponentHTML);
+	$('#resultMessage').html(result);
+});
 
+socket.on('win', function(toWinner){
+	var message = 'You chose ' + toWinner.yourChoice + 
+								', they chose ' + toWinner.theirChoice + 
+								'. YOU WIN!';
+	$('#resultMessage').html(message);
+});
 
+socket.on('lose', function(toLoser){
+	var message = 'You chose ' + toLoser.yourChoice +
+								', they chose ' + toLoser.theirChoice +
+								'. YOU LOSE!';
+	$('#resultMessage').html(message);
+});
 
+$(".choice").on("click", function(){
+	var clientSelectedHTML = "You chose " + this.dataset.choice + "";
+	$("#clientChoice").html(clientSelectedHTML);
+	var clientChoice = this.dataset.choice;
+	socket.emit("clientChoice", clientChoice);
+});
