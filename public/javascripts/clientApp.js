@@ -35,6 +35,10 @@ socket.on('lose', function(toLoser){
 	$('#resultMessage').html(message);
 });
 
+socket.on('tie', function(){
+	alert("it's a tie!");
+});
+
 $(".choice").on("click", function(){
 	var clientSelectedHTML = "You chose " + this.dataset.choice + "";
 	$("#clientChoice").html(clientSelectedHTML);

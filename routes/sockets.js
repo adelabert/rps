@@ -115,12 +115,19 @@ module.exports = function(sockets) {
 		
 		socket.on('clientChoice', function(clientChoice){
 			var gameStatus = loadGame.getGameResult(clientChoice, socket, room.games);
-			if(!gameStatus.tie){
-				pruneGame(gameStatus.game, room.games);
+			console.log('e');
+			console.log(gameStatus);
+			if(gameStatus.finished){
+				if(!gameStatus.tie){
+					pruneGame(gameStatus.game, room.games);
+				}
+				else {
+					console.log('tie');
+					gameStatus.game.higher.socket.emit('tie');
+					gameStatus.game.lower.socket.emit('tie');
+				}				
 			}
-			else {
-				//TIE
-			}
+
 		});
 
 		socket.on('disconnect', function(){

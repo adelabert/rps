@@ -1,17 +1,20 @@
 module.exports = function loadGame() {
 	checkGame = function(game, games){
 		if(game.higherChoice && game.lowerChoice){
-			var gameResult = evaluateWinner(game.higherChoice, game.lowerChoice, game)
+			console.log('a');
+			var gameResult = evaluateWinner(game.higherChoice, game.lowerChoice, game, true);
+			console.log('b');
 			if(!gameResult.tie){
 				notifyWinLoss(gameResult);
 				return gameResult;			
 			}
 			else {
-				notifyTie(gameResult);
+				console.log('c');
+				console.log(gameResult);
 				return gameResult;
 			}
-		} else {
-			return (new GameResult(null, null, true, null, null, game));
+		} else { //game not complete
+			return (new GameResult(null, null, false, null, null, game, false)); 
 		}
 	};
 
@@ -31,41 +34,43 @@ module.exports = function loadGame() {
 	};
 
 	//game result constructor
-	var GameResult = function(winner, loser, tie, winnerChoice, loserChoice, game){
+	var GameResult = function(winner, loser, tie, winnerChoice, loserChoice, game, finished){
 		this.winner = winner;
 		this.winnerChoice = winnerChoice;
 		this.loser = loser;
 		this.loserChoice = loserChoice;
 		this.tie = tie;
 		this.game = game;
+		this.finished = finished;
 	};
 
 	evaluateWinner = function(higherChoice, lowerChoice, game){
 		if(higherChoice == lowerChoice){
-			return (new GameResult(null, null, true, null, null, game));
+			console.log('f');
+			return (new GameResult(null, null, true, null, null, game, true));
 		} 
 		else if (higherChoice == 'rock' ){
 			if( lowerChoice == 'scissors' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game));
+				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game, true));
 			}
 			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game));
+				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game, true));
 			}
 		} 
 		else if (higherChoice == 'paper' ){
 			if( lowerChoice == 'rock' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game));
+				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game, true));
 			}
 			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game));
+				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game, true));
 			}
 		} 
 		else {
 			if( lowerChoice == 'paper' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game));
+				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice, game, true));
 			}
 			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game));
+				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice, game, true));
 			}
 		}
 	};
