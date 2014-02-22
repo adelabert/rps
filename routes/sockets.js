@@ -2,12 +2,12 @@
 module.exports = function(sockets) {
 	//include game module
 	var loadGame = require('./middle/game.js')();
-
+/*
 	//include two player game functions
-	var twoPlayer = require('./middle/twoPlayer.js')();
+	var twoPlayer = require('./middle/twoPlayer.js')();*/
 
 	//load rock, paper, scissor
-	var rps = new loadGame.Game('Rock, Paper, Scissors', 2);
+	var rps = new loadGame.gameMeta('Rock, Paper, Scissors', 2);
 
 	//room info
 	var room = {
@@ -17,72 +17,6 @@ module.exports = function(sockets) {
 		'waiting': []
 	};
 
-	function checkGame(game, games){
-		if(game.higherChoice && game.lowerChoice){
-			var gameResult = evaluateWinner(game.higherChoice, game.lowerChoice, game);
-			if(!gameResult.tie){
-				notifyResults(gameResult);
-				pruneGame(game, games);				
-			}
-			else {
-				
-			}
-
-		}
-	}
-
-	function notifyResults(gameResult){
-		var toWinner = {
-			'yourChoice': gameResult.winnerChoice,
-			'theirChoice': gameResult.loserChoice
-		};
-		gameResult.winner.socket.emit('win', toWinner);
-		console.log('notified winner');
-		var toLoser = {
-			'yourChoice': gameResult.loserChoice,
-			'theirChoice': gameResult.winnerChoice
-		};
-		gameResult.loser.socket.emit('lose', toLoser);
-		console.log('notified loser');
-	}
-
-	function GameResult(winner, loser, tie, winnerChoice, loserChoice){
-		this.winner = winner;
-		this.winnerChoice = winnerChoice;
-		this.loser = loser;
-		this.loserChoice = loserChoice;
-		this.tie = tie;
-	}
-
-	function evaluateWinner(higherChoice, lowerChoice, game){
-		if(higherChoice == lowerChoice){
-			var curResult = new GameResult(null,null,false);
-			return gameResult;
-		} 
-		else if (higherChoice == 'rock' ){
-			if( lowerChoice == 'scissors' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice));
-			}
-			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice));
-			}
-		} 
-		else if (higherChoice == 'paper' ){
-			if( lowerChoice == 'rock' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice));
-			}
-			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice));
-			}
-		} else {
-			if( lowerChoice == 'paper' ){
-				return (new GameResult(game.higher, game.lower, false, higherChoice, lowerChoice));
-			}
-			else {
-				return (new GameResult(game.lower, game.higher, false, lowerChoice, higherChoice));
-			}
-		}
-	}
 
 	//user constructor
 	function User(socket, username, rank){
@@ -92,34 +26,11 @@ module.exports = function(sockets) {
 		this.rank     = rank;
 	}
 
-	//game constructor
-	function Game(higher, lower){
-		this.higher = higher;
-		this.lower  = lower;
-		this.higherChoice = null;
-		this.lowerChoice = null;
-	}
-
-	function setGameResult(clientChoice, socket, games){
-		for(var i=0; i<games.length; i++){
-			if(games[i].higher.socketId == socket.id){
-				games[i].higherChoice = clientChoice;
-				checkGame(games[i], games);
-				break;
-			} 
-			if(games[i].lower.socketId == socket.id) {
-				games[i].lowerChoice = clientChoice;
-				checkGame(games[i], games);
-				break;
-			} 
-		}
-	}
-
 	function pruneGame(game, games){
 		for(var i=0; i<games.length; i++){
 			if(games[i]==game){
 				games.splice(i,1);
-				i = games.length;
+				i = games.length
 			}
 		}
 	}
@@ -186,7 +97,7 @@ module.exports = function(sockets) {
 		var players = {'higher':clientHigher, 'lower':clientLower};
 		higher.socket.emit('startingHigher', players);
 		lower.socket.emit('startingLower', players);
-		var tempGame = new Game(higher, lower);
+		var tempGame = new loadGame.Game(higher, lower);
 		room.games.push(tempGame);
 	}
 
@@ -203,7 +114,13 @@ module.exports = function(sockets) {
 		});
 		
 		socket.on('clientChoice', function(clientChoice){
-			setGameResult(clientChoice, socket, room.games);
+			var gameStatus = loadGame.getGameResult(clientChoice, socket, room.games);
+			if(!gameStatus.tie){
+				pruneGame(gameStatus.game, room.games);
+			}
+			else {
+				//TIE
+			}
 		});
 
 		socket.on('disconnect', function(){

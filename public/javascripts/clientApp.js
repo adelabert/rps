@@ -41,3 +41,4 @@ $(".choice").on("click", function(){
 	var clientChoice = this.dataset.choice;
 	socket.emit("clientChoice", clientChoice);
 });
+
