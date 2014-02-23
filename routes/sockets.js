@@ -122,9 +122,11 @@ module.exports = function(sockets) {
 					pruneGame(gameStatus.game, room.games);
 				}
 				else {
-					console.log('tie');
+					pruneGame(gameStatus.game, room.games);
 					gameStatus.game.higher.socket.emit('tie');
 					gameStatus.game.lower.socket.emit('tie');
+					startGame(gameStatus.game.higher, gameStatus.game.lower);
+					
 				}				
 			}
 

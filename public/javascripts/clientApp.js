@@ -16,7 +16,7 @@ socket.on('startingLower', function(players){
 });
 
 socket.on('opponentChoice', function(opponentChoice, result){
-	var opponentHTML = 'they choice ' + opponentChoice + '';
+	var opponentHTML = 'they chose ' + opponentChoice + '';
 	$('#opponentChoice').html(opponentHTML);
 	$('#resultMessage').html(result);
 });
@@ -36,10 +36,14 @@ socket.on('lose', function(toLoser){
 });
 
 socket.on('tie', function(){
-	alert("it's a tie!");
+	var message = "It's a tie! Choose again";
+	$('#clientChoice').html('');
+	$('#board').toggle();
+	$('#resultMessage').html(message);
 });
 
 $(".choice").on("click", function(){
+	$('.choices').toggle();
 	var clientSelectedHTML = "You chose " + this.dataset.choice + "";
 	$("#clientChoice").html(clientSelectedHTML);
 	var clientChoice = this.dataset.choice;
